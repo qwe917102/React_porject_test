@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 // //建立一個DOM物件
 // let element = <h1>Hello, world!</h1>
 
@@ -19,6 +18,9 @@ const timeComponent = () => {
         time : new Date().toLocaleTimeString(),
         num : props.num,
       };
+    };
+    render() {
+      return <h1>成功囉！,{this.state.num} 現在顯示時間 {this.state.time}</h1>
     };
     //加入組件建構完成後執行的事件
     // 相當於 vue mounted 執行 
@@ -42,9 +44,6 @@ const timeComponent = () => {
       //這裡記錄移除掉的時間
       console.log(`移除組件的時間為：${this.state.time}`)
     };
-    render() {
-        return <h1>成功囉！,{this.state.num} 現在顯示時間 {this.state.time}</h1>
-    };
   };
   let title = ( 
     <div>
@@ -59,3 +58,60 @@ const removeComponent = () =>{
 timeComponent();
 //延遲五秒後執行移除
 setTimeout(removeComponent,5000)
+
+const testBtnComponent = () => {
+  class TestBtn extends React.Component{
+    constructor(props) {
+      super(props);
+      this.state = {
+        clickCount : props.clickNum,
+      };
+      this.testConsole = this.testConsole.bind(this);
+    };
+    testConsole(){
+      this.setState({clickCount: Number(this.state.clickCount) + 1});
+      // console.log('測試成功');
+    };
+    componentDidUpdate(){
+      console.log(`點了${this.state.clickCount}下`)
+    };
+    render() {
+      return <button onClick={this.testConsole}>
+                <p>按測試查看</p>
+              </button>;
+    };
+  };
+  let btn = (
+      <TestBtn clickNum="0"></TestBtn>
+    );
+  ReactDOM.render(btn, document.getElementById('testBtn'));
+};
+testBtnComponent();
+
+const selectorBtnComponent = () => {
+  class InputGander extends React.Component {
+    constructor(props){
+      super(props)
+      this.state = ({gender : ''})
+      this.changeGender = this.changeGender.bind(this)
+    };
+    //宣告事件時傳入參數event取得觸發事件變數
+    changeGender(event){
+        //將觸發事件的DOM從event內的target屬性取出
+        console.log(event.target)
+        //指定選擇的性別給state.gender
+        this.setState({ gender: event.target.value });
+    };
+    componentDidUpdate(){
+        console.log(`已將state.gender變動為：${this.state.gender}`);
+    };
+    render(){
+        return (<select onChange={this.changeGender.bind(this)}>
+                    <option value="M">男</option>
+                    <option value="W">女</option>
+                </select>)
+    };
+  };
+  ReactDOM.render(<InputGander />, document.getElementById('gander-select'));
+};
+selectorBtnComponent();
